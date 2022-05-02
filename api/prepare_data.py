@@ -5,7 +5,7 @@ import os
 
 url = "http://0.0.0.0:8000/detect/"
 
-data_path = '../data/original_data/thay_ra/'
+data_path = '../data/original_data/ninh_ra/'
 dest_data_path = data_path.replace('original_data', 'processed_data')
 if not os.path.exists(dest_data_path):
     os.mkdir(dest_data_path)
