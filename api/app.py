@@ -1,9 +1,6 @@
-import torch
-import cv2 
 import numpy as np
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, Form
 from fastapi.encoders import jsonable_encoder
-import asyncio
 import uvicorn
 from typing import List
 from model import load_model, get_emb
