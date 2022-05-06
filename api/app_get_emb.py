@@ -3,7 +3,9 @@ from fastapi import FastAPI, Form
 from fastapi.encoders import jsonable_encoder
 import numpy as np 
 from model import load_model, get_emb
-
+from distance import l2_normalize
+import base64
+import time 
 
 # Model
 model_path = '/home/giabao/.insightface/models/buffalo_l/w600k_r50.onnx'
@@ -15,14 +17,23 @@ app = FastAPI()
 @app.post("/get_emb/")
 async def get_emb_image(image_path: str = Form(...)):
     emb = get_emb(model, image_path)
-    emb_string = str(emb.tolist())
-    
-    # convert to numpy
-    # emb_converted = np.fromstring(emb_string[1:-1], sep=',')
+    emb_norm = l2_normalize(emb)
+    emb_norm_bytes = base64.b64encode(emb_norm)
+    emb_norm_string = emb_norm_bytes.decode("utf-8")
+
+    # # to revert
+    # t1 = time.time()
+    # emb_norm_bytes_2 = str.encode(emb_norm_string)
+    # emb_norm_bytes_2 = base64.b64decode(emb_norm_bytes_2)
+    # emb_norm_2 = np.frombuffer(emb_norm_bytes_2, dtype=np.float32)
+
+    # print(emb_norm_2 == emb_norm)
+    # print(time.time() - t1)  # time revert: 0.0009162s
+
     return jsonable_encoder({
             "code": 200,
-            'emb': emb_string,
-            "msg": 'euclidean'
+            'emb': emb_norm_string,
+            "msg": 'success'
         })
 
 if __name__ == "__main__":
