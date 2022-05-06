@@ -37,7 +37,7 @@
 
 #### API Get Embbedding
 Use: ```python app_get_emb.py```  
-Url: ```http://127.0.0.1:8100/get_emb/``` 
+Url: ```http://127.0.0.1:8100/get_emb/```  
 C#: 
 ```
 var client = new RestClient("http://0.0.0.0:8100/get_emb/");
