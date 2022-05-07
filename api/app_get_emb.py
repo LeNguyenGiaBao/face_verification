@@ -21,8 +21,8 @@ async def get_emb_image(image_path: str = Form(...)):
 
 
     # -------------------------------- BASE64 --------------------------------
-    emb_norm_bytes = base64.b64encode(emb_norm)
-    emb_norm_string = emb_norm_bytes.decode("utf-8")
+    # emb_norm_bytes = base64.b64encode(emb_norm)
+    # emb_norm_string = emb_norm_bytes.decode("utf-8")
 
     # # to revert
     # t1 = time.time()
@@ -35,7 +35,7 @@ async def get_emb_image(image_path: str = Form(...)):
 
 
     # ------------------------------ LIST -----------------------------------
-    # emb_norm_string = str(emb_norm.tolist())
+    emb_norm_string = str(emb_norm.tolist())[1:-1]
 
     # # to revert
     # emb_converted = np.fromstring(emb_string[1:-1], sep=',')
@@ -49,4 +49,4 @@ async def get_emb_image(image_path: str = Form(...)):
 
 if __name__ == "__main__":
     # run API
-    uvicorn.run('app_get_emb:app', host="0.0.0.0", port=8100, reload=True)
+    uvicorn.run('app_get_emb:app', host="0.0.0.0", port=8200, reload=True)

@@ -7,10 +7,10 @@ def findEuclideanDistance(in_emb, out_emb):
     euclidean_distance = np.sqrt(euclidean_distance)
 
     print(euclidean_distance)
-    euclidean_distance = np.min(euclidean_distance)
-    print(euclidean_distance)
+    min_euclidean_distance = np.min(euclidean_distance)
+    print(min_euclidean_distance)
 
-    return euclidean_distance
+    return min_euclidean_distance
 
 def l2_normalize(x):
     return x / np.sqrt(np.sum(np.multiply(x, x)))
