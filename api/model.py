@@ -16,6 +16,7 @@ def load_model(model_path):
     return model
 
 def get_emb(model, img_path):
+    t1 = time.time()
     img = cv2.imread(img_path)
 
     # generate bbox, assume that bbox is size of image
@@ -28,7 +29,8 @@ def get_emb(model, img_path):
     face = Face(bbox=bbox, kps=landmark, det_score=1)  # det_score dont affect to emb
 
     emb = model.get(img, face)
-
+    t2 = time.time()
+    print(t2-t1)
     return emb
 
 

@@ -18,6 +18,9 @@ app = FastAPI()
 async def get_emb_image(image_path: str = Form(...)):
     emb = get_emb(model, image_path)
     emb_norm = l2_normalize(emb)
+
+
+    # -------------------------------- BASE64 --------------------------------
     emb_norm_bytes = base64.b64encode(emb_norm)
     emb_norm_string = emb_norm_bytes.decode("utf-8")
 
@@ -30,10 +33,18 @@ async def get_emb_image(image_path: str = Form(...)):
     # print(emb_norm_2 == emb_norm)
     # print(time.time() - t1)  # time revert: 0.0009162s
 
+
+    # ------------------------------ LIST -----------------------------------
+    # emb_norm_string = str(emb_norm.tolist())
+
+    # # to revert
+    # emb_converted = np.fromstring(emb_string[1:-1], sep=',')
+
+
     return jsonable_encoder({
             "code": 200,
             'emb': emb_norm_string,
-            "msg": 'success'
+            "type": 'list'
         })
 
 if __name__ == "__main__":
