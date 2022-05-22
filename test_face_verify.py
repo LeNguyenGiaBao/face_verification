@@ -10,32 +10,76 @@ model_name = 'buffalo_m'
 app = FaceAnalysis(name=model_name, allowed_modules=['detection', 'recognition']) # enable detection model only
 app.prepare(ctx_id=0, det_size=(640, 640))
 
-# app = insightface.model_zoo.get_model('/home/giabao/.insightface/models/buffalo_l/w600k_r50.onnx')
-# app.prepare(ctx_id=0)
+# img_vao = cv2.imread('./data/matvao_3444605152_134536_PLATE_6.png')
+# img_ra = cv2.imread('./data/matra_3857309562_134850_PLATE_9.png')
 
-dataset_path = '../data_verify/KomNET_dataset/*/'
-# dataset_path = '../data_verify/KomNET_dataset/Social Media/original_training_sosmed/train/*/*.*'
 
-# print(len(glob.glob(dataset_path)))
-sim_list = []
-for folder in glob.glob(dataset_path):
-    paths = glob.glob(folder + '*.*')[:2]
-    path1 = paths[0]
-    path2 = paths[1]
+# print(img_vao.shape)
+# print(img_ra.shape)
 
-    img1 = cv2.imread(path1)
-    img2 = cv2.imread(path2)
+# emb1 = app.get(img_vao)
+# emb2 = app.get(img_ra)
 
-    emb1 = app.get(img1)[0].embedding
-    emb2 = app.get(img2)[0].embedding
-    if emb1.shape == emb2.shape:
-        sim = findCosineDistance(emb1, emb2)
-        print(sim)
+# emb1 = emb1[0].embedding
+# emb2 = emb2[0].embedding
 
-        sim_list.append(sim)
+# emb1 = l2_normalize(emb1)
+# emb2 = l2_normalize(emb2)
+
+# dis = findEuclideanDistance(emb1, emb2)
+# print(dis)
+
+ninh_vao = glob.glob('./data/ninh_vao/*.png')
+ninh_ra = glob.glob('./data/ninh_ra/*.png')
+thay_ra = glob.glob('./data/thay_ra/*.png')
+
+print(len(ninh_vao))
+print(len(ninh_ra))
+print(len(thay_ra))
+
+emb_ninh_vao = []
+emb_ninh_ra = []
+emb_thay_ra = []
+
+for i in ninh_vao:
+    img = cv2.imread(i)
+    face = app.get(img)
     
-print(len(sim_list))
-with open('sim_same_person.txt', 'w') as f:
-    for sim in sim_list:
-        f.write(str(sim)+'\n')
-    # exit()
+    if face != []:
+        emb = face[0].embedding
+        emb_norm = l2_normalize(emb)
+        emb_ninh_vao.append([i, emb_norm])
+
+for i in ninh_ra:
+    img = cv2.imread(i)
+    face = app.get(img)
+    
+    if face != []:
+        emb = face[0].embedding
+        emb_norm = l2_normalize(emb)
+        emb_ninh_ra.append([i, emb_norm])
+
+for i in thay_ra:
+    img = cv2.imread(i)
+    face = app.get(img)
+    
+    if face != []:
+        emb = face[0].embedding
+        emb_norm = l2_normalize(emb)
+        emb_thay_ra.append([i, emb_norm])
+
+print(len(emb_ninh_vao))
+print(len(emb_ninh_ra))
+print(len(emb_thay_ra))
+
+same = open('./data/ninh_vao_ra_cosine.csv', 'w')
+for i in emb_ninh_vao:
+    for j in emb_ninh_ra:
+        dis = findCosineDistance(i[1], j[1])
+        same.write('{},{},{}\n'.format(i[0], j[0], dis))
+
+diff = open('./data/ninh_vao_thay_ra_cosine.csv', 'w')
+for i in emb_ninh_vao:
+    for j in emb_thay_ra:
+        dis = findCosineDistance(i[1], j[1])
+        diff.write('{},{},{}\n'.format(i[0], j[0], dis))

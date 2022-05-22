@@ -1,9 +1,14 @@
-import numpy as np
-import base64
+import os 
+import numpy as np 
 
-def revert_from_base64(input):
-    str_encode = str.encode(input)
-    base64_decode = base64.b64decode(str_encode)
-    emb = np.frombuffer(base64_decode, dtype=np.float32)
+def get_landmark(path):
+    dir_path, file_name_extension = os.path.split(path)
+    file_name = os.path.splitext(file_name_extension)[0] 
 
-    return emb
+    file_name_components = file_name.split('_')
+    landmark_string = file_name_components[-1]
+    landmark_list = landmark_string.split(',')
+    landmark_list_int = list(map(int, landmark_list))
+    landmark = np.array(landmark_list_int)  # 1-d array
+
+    return landmark

@@ -2,51 +2,63 @@ import uvicorn
 from fastapi import FastAPI, Form
 from fastapi.encoders import jsonable_encoder
 import numpy as np 
-from model import load_model, get_emb
+
+from model import load_emb_model
+from get_emb import get_emb
 from distance import l2_normalize
 import base64
 import time 
 
-# Model
-model_path = '/home/giabao/.insightface/models/buffalo_l/w600k_r50.onnx'
-model = load_model(model_path)
+# config
+FACE_EMB_MODEL = "opencv"  # or "insightface"
+ENCODE_TYPE = "string"  # or "base64"
+
+# load model
+model = load_emb_model(FACE_EMB_MODEL)
 
 # Fast API
 app = FastAPI()
 
+@app.get("/")
+def index():
+    return {"name" : "giabao"}
+
 @app.post("/get_emb/")
 async def get_emb_image(image_path: str = Form(...)):
-    emb = get_emb(model, image_path)
-    emb_norm = l2_normalize(emb)
+    try:
+        emb = get_emb(FACE_EMB_MODEL, model, image_path)
+        emb_norm = l2_normalize(emb)
 
+        if ENCODE_TYPE == 'string':
+            emb_norm_string = str(emb_norm.tolist())[1:-1]
 
-    # -------------------------------- BASE64 --------------------------------
-    # emb_norm_bytes = base64.b64encode(emb_norm)
-    # emb_norm_string = emb_norm_bytes.decode("utf-8")
+            return jsonable_encoder({
+                "code": 200,
+                "emb": emb_norm_string,
+                "model": FACE_EMB_MODEL,
+                "encode_type": ENCODE_TYPE
+            })
 
-    # # to revert
-    # t1 = time.time()
-    # emb_norm_bytes_2 = str.encode(emb_norm_string)
-    # emb_norm_bytes_2 = base64.b64decode(emb_norm_bytes_2)
-    # emb_norm_2 = np.frombuffer(emb_norm_bytes_2, dtype=np.float32)
+        elif ENCODE_TYPE == 'base64':
+            emb_norm_bytes = base64.b64encode(emb_norm)
+            emb_norm_string = emb_norm_bytes.decode("utf-8")
 
-    # print(emb_norm_2 == emb_norm)
-    # print(time.time() - t1)  # time revert: 0.0009162s
+            return jsonable_encoder({
+                "code": 200,
+                "emb": emb_norm_string,
+                "model": FACE_EMB_MODEL,
+                "encode_type": ENCODE_TYPE
+            })
 
+    except Exception as e:
+            print(e)
+            return jsonable_encoder({
+                    "code": 201,
+                    "error_code": 0,
+                    "msg": str(e)
+                })
 
-    # ------------------------------ LIST -----------------------------------
-    emb_norm_string = str(emb_norm.tolist())[1:-1]
-
-    # # to revert
-    # emb_converted = np.fromstring(emb_string[1:-1], sep=',')
-
-
-    return jsonable_encoder({
-            "code": 200,
-            'emb': emb_norm_string,
-            "type": 'list'
-        })
 
 if __name__ == "__main__":
     # run API
-    uvicorn.run('app_get_emb:app', host="0.0.0.0", port=8200, reload=True)
+    uvicorn.run('app_get_emb:app', host="0.0.0.0", port=8100, reload=True)
