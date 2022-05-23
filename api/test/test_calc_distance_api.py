@@ -27,7 +27,7 @@ print(response.text)
 print("Time", t2-t1)
 
 # {"code":200,"distance":"0.9410259223306792","measure":"euclidean","model":"opencv","encode_type":"string"}
-# Time 0.014177322387695312
+# Time 0.007642507553100586
 
 # NOTE input
 '''
