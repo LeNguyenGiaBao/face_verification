@@ -23,7 +23,8 @@ Face verification in parking lot:
 - OpenCV model
     - Get embeeding: 0.05525665283203125 s/image
     - Calculate distance: ~0.01 (10 embs in and 1 emb out)
-    - [PC]: Get embeeding:0.015888469696044922 (CPU 100%, GPU 30%, 250 requests)
+    - [PC]: Get embeeding: 0.015888469696044922 (CPU 100%, GPU 30%, 250 requests)
+    - [PC]: Calculate distance: 0.005779938697814941 (trivial CPU, GPU, 100 requests)
 
     - Moto in: 10 images -> ~0.5s 
     - Moto out: 1 image + calc distance = 0.05 + 0.01 = 0.06. Assume that 10 out images -> 0.6s
