@@ -1,9 +1,13 @@
 import cv2 
+import base64
+import numpy as np 
 from get_landmark import get_landmark
 
-def get_emb(model_name, model, img_path):
-    img = cv2.imread(img_path)
-
+def get_emb(model_name, model, image):
+    contents = base64.b64decode(image)
+    nparr = np.frombuffer(contents, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imwrite('test.jpg', img)
     # landmark = get_landmark(img_path)
     # img_height, img_width = img.shape[0], img.shape[1]
 

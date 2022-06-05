@@ -24,9 +24,9 @@ def index():
     return {"name" : "giabao"}
 
 @app.post("/get_emb/")
-async def get_emb_image(image_path: str = Form(...)):
+async def get_emb_image(image: str = Form(...)):
     try:
-        emb = get_emb(FACE_EMB_MODEL, model, image_path)
+        emb = get_emb(FACE_EMB_MODEL, model, image)
         emb_norm = l2_normalize(emb)
 
         if ENCODE_TYPE == 'string':
@@ -61,4 +61,4 @@ async def get_emb_image(image_path: str = Form(...)):
 
 if __name__ == "__main__":
     # run API
-    uvicorn.run('app_get_emb:app', host="0.0.0.0", port=8100, reload=True)
+    uvicorn.run('app_get_emb:app', host="127.0.0.1", port=8100, reload=True)

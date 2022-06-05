@@ -19,7 +19,7 @@ def index():
     return {"name" : "giabao"}
 
 @app.post("/distance/")
-async def distance(in_emb_list: List[str] = Form(...), out_emb_list: List[str] = Form(...)):
+async def distance(in_emb_list: List[str] = Form(""), out_emb_list: List[str] = Form("")):
     try:
         if ENCODE_TYPE == "string": 
             if FACE_EMB_MODEL == "opencv":
@@ -51,4 +51,4 @@ async def distance(in_emb_list: List[str] = Form(...), out_emb_list: List[str] =
 
 if __name__ == "__main__":
     # run API
-    uvicorn.run('app_calc_distance:app', host="0.0.0.0", port=8200, reload=True)
+    uvicorn.run('app_calc_distance:app', host="127.0.0.1", port=8200, reload=True)
